@@ -36,15 +36,13 @@ Marine Risk Intelligence bridges this gap by:
 
 ---
 
-## Tech Stack (Planned / In Progress)
+## Tech Stack 
 
 - **Backend:** Python  
 - **Data Handling:** APIs, Node, CSV / JSON datasets  
 - **Analytics:** Data processing & basic ML models for social media anaylsis   
 - **Frontend (Prototype):** React, Vite, TypeScript, Tailwind CSS  
 - **Version Control:** Git & GitHub
-
-*(Tech stack may evolve as the project progresses.)*
 
 <!-- 
 ---
