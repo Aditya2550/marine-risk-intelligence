@@ -67,8 +67,8 @@ Advanced features like real-time alerts, dashboards, and AI models are part of f
 - Interactive dashboards
 - Integration with official ocean & weather APIs
 - Support for disaster management authorities
--->
 ---
+-->
 <!--
 ## 🤝 Contributors
 
