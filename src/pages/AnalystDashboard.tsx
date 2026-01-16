@@ -5,15 +5,46 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  AreaChart, Area
-} from 'recharts';
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import {
-  Map, Activity, TrendingUp, Users, AlertTriangle, MessageSquare,
-  Filter, Search, MapPin, Clock, Shield, ThumbsUp, ThumbsDown,
-  Zap, Eye, Download, RefreshCw, Radio, BrainCircuit, Terminal
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+} from "recharts";
+import {
+  Map,
+  Activity,
+  TrendingUp,
+  Users,
+  AlertTriangle,
+  MessageSquare,
+  Filter,
+  Search,
+  MapPin,
+  Clock,
+  Shield,
+  ThumbsUp,
+  ThumbsDown,
+  Zap,
+  Eye,
+  Download,
+  RefreshCw,
+  Radio,
+  BrainCircuit,
+  Terminal,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { useNavigate } from "react-router-dom";
@@ -22,11 +53,12 @@ import { useToast } from "@/hooks/use-toast";
 // Services
 import { generateMockSourceItem, SourceItem } from "@/services/sources";
 import { LLMService, TrendAnalysisResult } from "@/services/llm";
+import TwitterFeed from "../components/TwitterFeed";
 
 interface User {
   name: string;
   email: string;
-  role: 'citizen' | 'analyst';
+  role: "citizen" | "analyst";
 }
 
 interface Report {
@@ -35,8 +67,8 @@ interface Report {
   location: string;
   description: string;
   timestamp: Date;
-  status: 'new' | 'reviewing' | 'verified' | 'false-alarm';
-  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: "new" | "reviewing" | "verified" | "false-alarm";
+  priority: "low" | "medium" | "high" | "critical";
   coordinates: [number, number];
   citizenName: string;
   confidence?: number;
@@ -46,29 +78,32 @@ const AnalystDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [user, setUser] = useState<User | null>(null);
-  const [selectedTab, setSelectedTab] = useState('overview');
+  const [selectedTab, setSelectedTab] = useState("overview");
   const [reports, setReports] = useState<Report[]>([]);
 
   // LLM & Simulation State
-  const [apiKey, setApiKey] = useState(import.meta.env.VITE_GEMINI_API_KEY || '');
+  const [apiKey, setApiKey] = useState(
+    import.meta.env.VITE_GEMINI_API_KEY || ""
+  );
   const [isSimulating, setIsSimulating] = useState(false);
   const [rawFeed, setRawFeed] = useState<SourceItem[]>([]);
   const [processedCount, setProcessedCount] = useState(0);
-  const [trendAnalysis, setTrendAnalysis] = useState<TrendAnalysisResult | null>(null);
+  const [trendAnalysis, setTrendAnalysis] =
+    useState<TrendAnalysisResult | null>(null);
 
   const llmServiceRef = useRef<LLMService | null>(null);
 
   // Initialize user
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
-      if (parsedUser.role !== 'analyst') {
-        navigate('/citizen');
+      if (parsedUser.role !== "analyst") {
+        navigate("/citizen");
       }
     } else {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -86,8 +121,8 @@ const AnalystDashboard = () => {
         const newItem = generateMockSourceItem();
 
         // Update raw feed (keep last 50)
-        setRawFeed(prev => [newItem, ...prev].slice(0, 50));
-        setProcessedCount(c => c + 1);
+        setRawFeed((prev) => [newItem, ...prev].slice(0, 50));
+        setProcessedCount((c) => c + 1);
 
         // 2. Analyze with LLM
         if (llmServiceRef.current) {
@@ -98,23 +133,27 @@ const AnalystDashboard = () => {
               // Create a new report from the analysis
               const newReport: Report = {
                 id: Math.random().toString(36).substring(7),
-                type: analysis.hazardType || 'Unknown Hazard',
-                location: newItem.location || 'Unknown Location',
+                type: analysis.hazardType || "Unknown Hazard",
+                location: newItem.location || "Unknown Location",
                 description: analysis.summary || newItem.content,
                 timestamp: new Date(),
-                status: 'new',
-                priority: analysis.priority || 'medium',
-                coordinates: [20.5937 + (Math.random() - 0.5) * 10, 78.9629 + (Math.random() - 0.5) * 10], // Random approx coords for now
-                citizenName: newItem.author || 'System Monitor',
-                confidence: analysis.confidence
+                status: "new",
+                priority: analysis.priority || "medium",
+                coordinates: [
+                  20.5937 + (Math.random() - 0.5) * 10,
+                  78.9629 + (Math.random() - 0.5) * 10,
+                ], // Random approx coords for now
+                citizenName: newItem.author || "System Monitor",
+                confidence: analysis.confidence,
               };
 
-              setReports(prev => [newReport, ...prev]);
+              setReports((prev) => [newReport, ...prev]);
 
               toast({
                 title: "New Hazard Detected",
                 description: `${analysis.hazardType} at ${newItem.location}`,
-                variant: analysis.priority === 'critical' ? 'destructive' : 'default'
+                variant:
+                  analysis.priority === "critical" ? "destructive" : "default",
               });
             }
           } catch (e) {
@@ -134,7 +173,9 @@ const AnalystDashboard = () => {
     if (isSimulating && apiKey) {
       interval = setInterval(async () => {
         if (rawFeed.length > 5 && llmServiceRef.current) {
-          const analysis = await llmServiceRef.current.analyzeTrends(rawFeed.slice(0, 20)); // Analyze last 20 items
+          const analysis = await llmServiceRef.current.analyzeTrends(
+            rawFeed.slice(0, 20)
+          ); // Analyze last 20 items
           if (analysis) {
             setTrendAnalysis(analysis);
             toast({
@@ -146,23 +187,25 @@ const AnalystDashboard = () => {
       }, 30000);
     }
     return () => clearInterval(interval);
-  }, [isSimulating, apiKey, rawFeed]);
-
+  }, [isSimulating, apiKey, rawFeed, toast]);
 
   // Initialize Leaflet map
   useEffect(() => {
-    if (selectedTab === 'map') {
+    if (selectedTab === "map") {
       setTimeout(() => {
-        const mapContainer = document.getElementById('map');
+        const mapContainer = document.getElementById("map");
         if (mapContainer && !mapContainer.hasChildNodes()) {
-          const map = (window as any).L.map('map').setView([20.5937, 78.9629], 5);
-          (window as any).L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap'
-          }).addTo(map);
+          const map = window.L.map("map").setView([20.5937, 78.9629], 5);
+          window.L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+              maxZoom: 19,
+              attribution: "© OpenStreetMap",
+            }
+          ).addTo(map);
 
           reports.forEach((report) => {
-            const marker = (window as any).L.marker(report.coordinates).addTo(map);
+            const marker = window.L.marker(report.coordinates).addTo(map);
             marker.bindPopup(`
               <div>
                 <h3><strong>${report.type}</strong></h3>
@@ -177,45 +220,63 @@ const AnalystDashboard = () => {
   }, [selectedTab, reports]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'bg-red-500 text-white';
-      case 'high': return 'bg-coral text-coral-foreground';
-      case 'medium': return 'bg-yellow-500 text-white';
-      case 'low': return 'bg-blue-500 text-white';
-      default: return 'bg-muted text-muted-foreground';
+      case "critical":
+        return "bg-red-500 text-white";
+      case "high":
+        return "bg-coral text-coral-foreground";
+      case "medium":
+        return "bg-yellow-500 text-white";
+      case "low":
+        return "bg-blue-500 text-white";
+      default:
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'new': return 'bg-coral text-coral-foreground';
-      case 'reviewing': return 'bg-primary/20 text-primary';
-      case 'verified': return 'bg-seafoam text-seafoam-foreground';
-      case 'false-alarm': return 'bg-muted text-muted-foreground';
-      default: return 'bg-muted text-muted-foreground';
+      case "new":
+        return "bg-coral text-coral-foreground";
+      case "reviewing":
+        return "bg-primary/20 text-primary";
+      case "verified":
+        return "bg-seafoam text-seafoam-foreground";
+      case "false-alarm":
+        return "bg-muted text-muted-foreground";
+      default:
+        return "bg-muted text-muted-foreground";
     }
   };
 
   const getSentimentColor = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return 'text-seafoam';
-      case 'negative': return 'text-muted-foreground';
-      case 'urgent': return 'text-coral';
-      default: return 'text-muted-foreground';
+      case "positive":
+        return "text-seafoam";
+      case "negative":
+        return "text-muted-foreground";
+      case "urgent":
+        return "text-coral";
+      default:
+        return "text-muted-foreground";
     }
   };
 
   const getSentimentIcon = (sentiment: string) => {
     switch (sentiment) {
-      case 'positive': return <ThumbsUp className="w-4 h-4" />;
-      case 'negative': return <ThumbsDown className="w-4 h-4" />;
-      case 'urgent': return <Zap className="w-4 h-4" />;
-      default: return <MessageSquare className="w-4 h-4" />;
+      case "positive":
+        return <ThumbsUp className="w-4 h-4" />;
+      case "negative":
+        return <ThumbsDown className="w-4 h-4" />;
+      case "urgent":
+        return <Zap className="w-4 h-4" />;
+      default:
+        return <MessageSquare className="w-4 h-4" />;
     }
   };
 
@@ -226,7 +287,6 @@ const AnalystDashboard = () => {
       <Header user={user} onLogout={handleLogout} />
 
       <div className="container px-4 py-8">
-
         {/* Control Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 bg-card p-4 rounded-xl border shadow-sm">
           <div>
@@ -243,7 +303,10 @@ const AnalystDashboard = () => {
             {!apiKey ? (
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="outline" className="border-coral text-coral hover:bg-coral/10">
+                  <Button
+                    variant="outline"
+                    className="border-coral text-coral hover:bg-coral/10"
+                  >
                     <Zap className="w-4 h-4 mr-2" />
                     Enter API Key
                   </Button>
@@ -254,8 +317,9 @@ const AnalystDashboard = () => {
                   </DialogHeader>
                   <div className="py-4">
                     <p className="text-sm text-muted-foreground mb-4">
-                      To enable LLM analysis, please enter a valid Google Gemini API Key.
-                      The key is stored only in memory for this session.
+                      To enable LLM analysis, please enter a valid Google Gemini
+                      API Key. The key is stored only in memory for this
+                      session.
                     </p>
                     <Label>API Key</Label>
                     <Input
@@ -266,24 +330,36 @@ const AnalystDashboard = () => {
                     />
                   </div>
                   <DialogFooter>
-                    <Button onClick={() => document.getElementById('close-dialog')?.click()}>Save</Button>
+                    <Button
+                      onClick={() =>
+                        document.getElementById("close-dialog")?.click()
+                      }
+                    >
+                      Save
+                    </Button>
                     {/* Note: This is a hacky close, usually state controlled dialog is better but trying to be non-intrusive */}
                   </DialogFooter>
                 </DialogContent>
               </Dialog>
             ) : (
               <div className="flex items-center gap-3">
-                <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                <Badge
+                  variant="outline"
+                  className="text-green-600 border-green-200 bg-green-50"
+                >
                   API Connected
                 </Badge>
                 <Button
                   variant={isSimulating ? "destructive" : "default"}
                   onClick={() => setIsSimulating(!isSimulating)}
-                  className={isSimulating ? "" : "bg-seafoam hover:bg-seafoam/90"}
+                  className={
+                    isSimulating ? "" : "bg-seafoam hover:bg-seafoam/90"
+                  }
                 >
                   {isSimulating ? (
                     <>
-                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Stop Monitoring
+                      <RefreshCw className="w-4 h-4 mr-2 animate-spin" /> Stop
+                      Monitoring
                     </>
                   ) : (
                     <>
@@ -302,7 +378,9 @@ const AnalystDashboard = () => {
             <Terminal className="w-4 h-4 text-muted-foreground shrink-0" />
             <div className="flex-1 text-sm font-mono text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis">
               <span className="text-primary font-bold">LIVE FEED: </span>
-              {rawFeed[0] ? `[${rawFeed[0].source.toUpperCase()}] ${rawFeed[0].content}` : "Waiting for data..."}
+              {rawFeed[0]
+                ? `[${rawFeed[0].source.toUpperCase()}] ${rawFeed[0].content}`
+                : "Waiting for data..."}
             </div>
             <Badge variant="secondary">{processedCount} processed</Badge>
           </div>
@@ -314,7 +392,9 @@ const AnalystDashboard = () => {
             <CardHeader className="py-4 border-b">
               <CardTitle className="text-sm font-medium flex items-center justify-between">
                 Raw Data Source
-                <Badge variant="outline" className="text-[10px]">Real-time</Badge>
+                <Badge variant="outline" className="text-[10px]">
+                  Real-time
+                </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 overflow-y-auto p-0">
@@ -325,9 +405,14 @@ const AnalystDashboard = () => {
               ) : (
                 <div className="divide-y">
                   {rawFeed.map((item) => (
-                    <div key={item.id} className="p-3 hover:bg-primary/5 transition-colors text-xs">
+                    <div
+                      key={item.id}
+                      className="p-3 hover:bg-primary/5 transition-colors text-xs"
+                    >
                       <div className="flex items-center justify-between mb-1 text-muted-foreground">
-                        <span className="font-semibold uppercase text-[10px]">{item.source}</span>
+                        <span className="font-semibold uppercase text-[10px]">
+                          {item.source}
+                        </span>
                         <span>{item.timestamp.toLocaleTimeString()}</span>
                       </div>
                       <p className="line-clamp-2">{item.content}</p>
@@ -340,10 +425,26 @@ const AnalystDashboard = () => {
 
           {/* Main Dashboard Area */}
           <div className="col-span-1 md:col-span-3">
-            <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+            {/* Twitter Live Feed */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Live Twitter Alerts</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TwitterFeed />
+              </CardContent>
+            </Card>
+
+            <Tabs
+              value={selectedTab}
+              onValueChange={setSelectedTab}
+              className="w-full"
+            >
               <TabsList className="mb-4">
                 <TabsTrigger value="overview">Insights & Overview</TabsTrigger>
-                <TabsTrigger value="reports">Detected Hazards ({reports.length})</TabsTrigger>
+                <TabsTrigger value="reports">
+                  Detected Hazards ({reports.length})
+                </TabsTrigger>
                 <TabsTrigger value="map">Live Map</TabsTrigger>
               </TabsList>
 
@@ -362,8 +463,12 @@ const AnalystDashboard = () => {
                         {trendAnalysis.summary}
                       </p>
                       <div className="flex flex-wrap gap-2">
-                        {trendAnalysis.trendingKeywords?.map(k => (
-                          <Badge key={k.word} variant="secondary" className="px-3 py-1">
+                        {trendAnalysis.trendingKeywords?.map((k) => (
+                          <Badge
+                            key={k.word}
+                            variant="secondary"
+                            className="px-3 py-1"
+                          >
                             #{k.word} ({k.count})
                           </Badge>
                         ))}
@@ -380,14 +485,23 @@ const AnalystDashboard = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <Card>
-                    <CardHeader><CardTitle className="text-sm">Total Reports</CardTitle></CardHeader>
-                    <CardContent><p className="text-3xl font-bold">{reports.length}</p></CardContent>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Total Reports</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-3xl font-bold">{reports.length}</p>
+                    </CardContent>
                   </Card>
                   <Card>
-                    <CardHeader><CardTitle className="text-sm">Critical Events</CardTitle></CardHeader>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Critical Events</CardTitle>
+                    </CardHeader>
                     <CardContent>
                       <p className="text-3xl font-bold text-red-500">
-                        {reports.filter(r => r.priority === 'critical').length}
+                        {
+                          reports.filter((r) => r.priority === "critical")
+                            .length
+                        }
                       </p>
                     </CardContent>
                   </Card>
@@ -401,14 +515,19 @@ const AnalystDashboard = () => {
                       No hazards detected yet. Start the simulation.
                     </div>
                   ) : (
-                    reports.map(report => (
-                      <Card key={report.id} className="cursor-pointer hover:border-primary transition-all">
+                    reports.map((report) => (
+                      <Card
+                        key={report.id}
+                        className="cursor-pointer hover:border-primary transition-all"
+                      >
                         <CardContent className="p-4">
                           <div className="flex justify-between items-start mb-2">
                             <div>
                               <h3 className="font-bold flex items-center gap-2">
                                 {report.type}
-                                <Badge className={getPriorityColor(report.priority)}>
+                                <Badge
+                                  className={getPriorityColor(report.priority)}
+                                >
                                   {report.priority}
                                 </Badge>
                               </h3>
@@ -426,7 +545,8 @@ const AnalystDashboard = () => {
                           <div className="flex items-center gap-4 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Shield className="w-3 h-3" />
-                              Confidence: {((report.confidence || 0) * 100).toFixed(0)}%
+                              Confidence:{" "}
+                              {((report.confidence || 0) * 100).toFixed(0)}%
                             </span>
                             <span>Source: {report.citizenName}</span>
                           </div>
@@ -438,7 +558,10 @@ const AnalystDashboard = () => {
               </TabsContent>
 
               <TabsContent value="map">
-                <div id="map" className="h-[500px] w-full rounded-xl bg-muted" />
+                <div
+                  id="map"
+                  className="h-[500px] w-full rounded-xl bg-muted"
+                />
               </TabsContent>
             </Tabs>
           </div>
