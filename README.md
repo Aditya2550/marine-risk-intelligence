@@ -49,7 +49,7 @@ Marine Risk Intelligence bridges this gap by:
 - **Frontend:** HTML, React, Vite, TypeScript, Tailwind CSS
 - **Version Control:** Git & GitHub
 
-## <!--
+<!-- ## <!--
 
 ## 📌 Project Status
 
@@ -63,9 +63,6 @@ This repository currently focuses on:
 
 Advanced features like real-time alerts, dashboards, and AI models are part of future enhancements.
 -->
-
----
-
 <!--
 ## Future Scope
 
