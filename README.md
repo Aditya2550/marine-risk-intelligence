@@ -1,6 +1,6 @@
 # 🌊 Marine Risk Intelligence
 
-![Login Page](docs/images/login-page.png)
+![Login Page](pictures/Screenshots/login-page.png)
 
 Marine Risk Intelligence is a smart analytics platform designed to monitor, analyze, and understand ocean-related hazards by combining environmental data with insights from social media.  
 The goal is simple: **better awareness, faster response, and safer coastlines**.
