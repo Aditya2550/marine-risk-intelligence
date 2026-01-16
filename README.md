@@ -1,5 +1,7 @@
 # 🌊 Marine Risk Intelligence
 
+![Login Page](docs/images/login-page.png)
+
 Marine Risk Intelligence is a smart analytics platform designed to monitor, analyze, and understand ocean-related hazards by combining environmental data with insights from social media.  
 The goal is simple: **better awareness, faster response, and safer coastlines**.
 
@@ -13,10 +15,11 @@ Coastal and marine hazards such as cyclones, storm surges, high tides, and abnor
 At the same time, people actively share ground-level updates on social media during such events.
 
 Marine Risk Intelligence bridges this gap by:
+
 - Analyzing structured ocean/environmental data
 - Extracting useful signals from social media activity
 - Converting raw data into meaningful risk insights
-- Faster and precise location detection for rescue teams and government officials/teams to operate 
+- Faster and precise location detection for rescue teams and government officials/teams to operate
 
 ---
 
@@ -36,29 +39,31 @@ Marine Risk Intelligence bridges this gap by:
 
 ---
 
-## Tech Stack 
+## Tech Stack
 
-- **Backend:** Python  
-- **Data Handling:** APIs, Node, CSV / JSON datasets  
-- **Analytics:** Data processing & basic ML models for social media anaylsis   
-- **Frontend:** HTML, React, Vite, TypeScript, Tailwind CSS  
+- **Backend:** Python
+- **Data Handling:** APIs, Node, CSV / JSON datasets
+- **Analytics:** Data processing & basic ML models for social media anaylsis
+- **Frontend:** HTML, React, Vite, TypeScript, Tailwind CSS
 - **Version Control:** Git & GitHub
 
-<!-- 
----
+## <!--
 
 ## 📌 Project Status
 
 🟡 **Prototype / Development Phase**
 
 This repository currently focuses on:
+
 - Core logic
 - Data processing
 - Initial analytics workflows
 
 Advanced features like real-time alerts, dashboards, and AI models are part of future enhancements.
 -->
+
 ---
+
 <!--
 ## Future Scope
 
@@ -78,9 +83,10 @@ This project is being developed as part of a team initiative for innovation and 
 
 ## 📄 License
 
-This project is open for learning, experimentation, and innovation.  
+This project is open for learning, experimentation, and innovation.
 Feel free to explore, fork, and contribute responsibly.
 
 ---
 -->
+
 **Marine Risk Intelligence — turning data into coastal safety.**
