@@ -11,9 +11,9 @@ interface Tweet {
   };
 }
 
-const data = await fetchTweets("cyclone OR coastal flooding");
+// const data = await fetchTweets("cyclone OR coastal flooding");
 
-const sourceItems = data.map(twitterTweetToSourceItem);
+// const sourceItems = data.map(twitterTweetToSourceItem);
 
 // now sourceItems is SourceItem[]
 
