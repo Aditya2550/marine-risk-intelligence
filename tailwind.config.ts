@@ -66,6 +66,7 @@ export default {
       fontFamily: {
         sans: ["Poppins", "sans-serif"],
         poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
         mono: ["Roboto Mono", "monospace"],
       },
       backgroundImage: {
